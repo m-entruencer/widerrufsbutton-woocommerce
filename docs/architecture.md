@@ -1,0 +1,103 @@
+# Technische Architektur
+
+## Ueberblick
+
+Eigenstaendiges WooCommerce-Plugin. Klare Schichtentrennung:
+Admin / Frontend / Mail / Domain / Repository / Product / Install.
+
+## PSR-4 / Namespace
+
+- Composer-Autoloading, Namespace `Entruencer\Widerruf\` -> Ordner `src/`.
+- Bootstrap in `widerrufsbutton-wc.php` (Header, Defines, HPOS-Deklaration,
+  Activation/Deactivation, plugins_loaded -> `Plugin::instance()->register()`).
+- Autoloader: bevorzugt `vendor/autoload.php`; fehlt es, registriert die Bootstrap-Datei
+  einen schlanken PSR-4-Fallback (`spl_autoload_register`, `Entruencer\Widerruf\` -> `src/`).
+  Damit laeuft das Plugin out-of-the-box ohne `composer install` (relevant fuer ZIP-Deploy).
+
+## Ordnerstruktur
+
+```
+widerrufsbutton-wc/
+  widerrufsbutton-wc.php     Bootstrap + Plugin-Header
+  uninstall.php             Loeschen nur bei aktivem Setting (Default: nein)
+  composer.json             PSR-4-Mapping
+  src/
+    Plugin.php              Wiring aller Subsysteme (Singleton)
+    Install/Migrator.php    dbDelta, Schema-Version, Activation/Deactivation
+    Admin/Menu.php          WC-Submenue "Widerrufe", Liste/Detail, 1-Klick-Freigabe
+    Admin/Settings.php      White-Label-Settings-Schema
+    Frontend/Form.php       Shortcode [widerrufsbutton] + Submit-Verarbeitung
+    Domain/DeadlineCalculator.php  Fristberechnung
+    Domain/CaseResolver.php Fall A/B/C
+    Domain/OrderMatcher.php Match ohne Enumeration
+    Repository/WithdrawalRepository.php  CRUD Custom Table
+    Mail/Mailer.php         wp_mail + ueberschreibbare Templates
+    Product/ExclusionField.php  Produkt-Datentab-Feld
+  templates/
+    emails/{acknowledgement,acceptance,rejection}.php
+    frontend/form.php
+  assets/css/{public,admin}.css
+  assets/js/public.js
+  languages/
+  docs/
+```
+
+## HPOS (High-Performance Order Storage)
+
+- `before_woocommerce_init`: `FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true)`.
+- Bestellzugriff ausschliesslich via `wc_get_order()` / `$order->get_meta()`.
+- NIEMALS direkte Queries auf wp_posts/postmeta fuer Bestelldaten.
+
+## Custom-Table-Schema ({prefix}entruencer_withdrawals)
+
+| Spalte | Typ | Hinweis |
+|---|---|---|
+| id | BIGINT UNSIGNED AI | PK |
+| order_id | BIGINT UNSIGNED NULL | FK zur WC-Order |
+| order_number | VARCHAR(64) NULL | |
+| customer_email | VARCHAR(191) NULL | KEY |
+| customer_name | VARCHAR(191) NULL | |
+| received_at_utc | DATETIME NULL | |
+| received_at_local | DATETIME NULL | |
+| case_type | CHAR(1) NULL | A/B/C |
+| deadline_days_snapshot | SMALLINT UNSIGNED NULL | |
+| order_date_snapshot | DATETIME NULL | Fristbeginn |
+| excluded_flag | TINYINT(1) DEFAULT 0 | |
+| exclusion_reason | TEXT NULL | |
+| waiver_proven | TINYINT(1) DEFAULT 0 | |
+| confirmation_mail_sent | TINYINT(1) DEFAULT 0 | |
+| status | VARCHAR(20) DEFAULT 'eingegangen' | KEY |
+| created_at | DATETIME NOT NULL | |
+
+- Anlage via `dbDelta()` in `Migrator::create_tables()`.
+- Schema-Version in wp_option `wrb_schema_version` (`Migrator::SCHEMA_VERSION`).
+- Upgrade-Check bei `admin_init` (`Migrator::maybe_upgrade`).
+
+## Mail-Layer
+
+- `Mailer` baut/sendet ueber `wp_mail()`.
+- Templates ueberschreibbar: zuerst `<theme>/widerrufsbutton-wc/<pfad>`, sonst Plugin.
+- `send_acknowledgement()` neutral, Datum+Uhrzeit Pflicht, Versandstatus persistiert.
+- `build_acceptance()` (Fall A), `build_rejection_draft()` (Fall B/C, nur nach Freigabe).
+- Versandfehler -> Log + Admin-Sichtbarkeit.
+
+## Settings-Schema (White-Label)
+
+`wrb_settings` (Array). Felder u.a.: deadline_days (Default 14), deadline_start_basis
+(created/paid/completed), sender_name, sender_email, reply_to, subject_*/body_* je Fall,
+confirmation_message, brand_name, brand_logo_url, accent_color, background_color,
+text_color, radius, delete_data_on_uninstall (Default false). Vollstaendige Referenz:
+docs/anpassung.md.
+
+## Update-Sicherheit
+
+- Daten in eigener Custom Table (kein CPT) -> stabil ueber Theme-/Plugin-Updates.
+- Schema-Versionsflag erlaubt kontrollierte Migrationen.
+- Deaktivierung loescht KEINE Daten; Deinstallation nur bei explizitem Setting.
+
+## White-Label-Mechanik
+
+- Keine festen Markenfarben/Texte im Code.
+- Sichtbare Werte aus Settings; CSS ueber Custom Properties `--wrb-accent`,
+  `--wrb-bg`, `--wrb-text`, `--wrb-radius`.
+- Eine konkrete Shop-Brand (z.B. cream/sage) ist nur ein Konfig-Beispiel, NICHT Default.

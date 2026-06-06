@@ -1,0 +1,88 @@
+# Funktionale Spezifikation
+
+Plugin: Widerrufsbutton für WooCommerce (White-Label, Open Source).
+Rechtsgrundlage: EU-RL 2023/2673, Paragraf 312k BGB, verpflichtend ab 19.06.2026.
+
+## Gesetzliche Pflichtbestandteile (Checkliste)
+
+- [ ] Gut sichtbarer elektronischer Widerrufsbutton, leicht zugaenglich.
+- [ ] Zweistufiger Flow: Button -> Bestaetigungsformular.
+- [ ] Bestaetigungsseite/-funktion zum Absenden der Widerrufserklaerung.
+- [ ] Automatische Eingangsbestaetigung an den Verbraucher (dauerhafter Datentraeger).
+- [ ] Eingangsbestaetigung enthaelt Datum UND Uhrzeit des Eingangs.
+- [ ] Erklaerung muss ohne Login/Account abgegeben werden koennen.
+- [ ] Keine unnoetigen Pflichtangaben ueber die Identifikation hinaus.
+
+Status aller Punkte: OFFEN (Implementierung folgt nach Rechtsklaerung, siehe rechtsfragen.md).
+
+## Zweistufiger Flow
+
+1. Stufe 1: Button "Vertrag widerrufen" auf einer oeffentlichen Seite (Shortcode [widerrufsbutton]).
+2. Stufe 2: Formular mit Name, Bestellnummer, E-Mail + Button "Widerruf bestätigen".
+3. Nach Absenden: immer neutrale Bestaetigungsseite ("Eingang bestätigt").
+4. Parallel: sofortige neutrale Eingangsbestaetigung per E-Mail.
+
+## Datenfelder (Custom Table entruencer_withdrawals)
+
+| Feld | Zweck |
+|---|---|
+| id | Primaerschluessel |
+| order_id | Verknuepfung zur WC-Bestellung (HPOS, via wc_get_order) |
+| order_number | Eingegebene/aufgeloeste Bestellnummer |
+| customer_email | E-Mail des Widerrufenden |
+| customer_name | Name des Widerrufenden |
+| received_at_utc | Eingangszeitpunkt UTC |
+| received_at_local | Eingangszeitpunkt lokal (fuer Bestaetigung) |
+| case_type | A / B / C |
+| deadline_days_snapshot | Fristlaenge zum Eingangszeitpunkt |
+| order_date_snapshot | Fristbeginn-Datum (Snapshot) |
+| excluded_flag | Position(en) vom Widerruf ausgeschlossen |
+| exclusion_reason | Begruendung des Ausschlusses |
+| waiver_proven | Wirksamer Verzicht nachgewiesen (digital/Sofort-Download) |
+| confirmation_mail_sent | Eingangsbestaetigung versendet |
+| status | eingegangen / in_bearbeitung / erledigt / abgelehnt |
+| created_at | Datensatz-Anlage |
+
+## Die drei Faelle A/B/C
+
+| Fall | Bedingung | Automatik | Manuell (1-Klick-Freigabe) |
+|---|---|---|---|
+| A | in Frist + nicht ausgeschlossen | Eingangsbestaetigung sofort | Akzeptanz-ENTWURF -> Freigabe |
+| B | in Frist + ausgeschlossen | Eingangsbestaetigung sofort | Ablehnungs-ENTWURF -> Freigabe |
+| C | ausserhalb Frist | Eingangsbestaetigung sofort | Entwurf -> Pruefung/Freigabe |
+
+Wichtig: Die neutrale Eingangsbestaetigung geht in ALLEN Faellen sofort und
+automatisch raus. KEINE Entscheidung (weder Akzeptanz noch Ablehnung) wird
+automatisch versendet - alle Entscheidungen sind Entwuerfe mit manueller
+1-Klick-Freigabe im Admin. Die Fall-Einstufung dient nur der Vorklassifizierung
+und der Auswahl des passenden Entwurfs.
+
+## Mail-Pflichten
+
+- Eingangsbestaetigung ist gesetzliche Pflicht und neutral formuliert.
+- Datum + Uhrzeit sind Pflichtbestandteil.
+- Versand via wp_mail(); SMTP-Relay empfohlen.
+- Templates als ueberschreibbare PHP-Templates (Theme-Override).
+- Absender, Reply-To, Betreff, Texte aus den Settings (white-label).
+- Versandfehler werden geloggt UND im Admin sichtbar gemacht.
+
+## Produkt-Flag
+
+- Produkt-Datentab-Feld "Vom Widerruf ausgeschlossen" (Checkbox) + Freitext-Grund.
+- Speicherung als Produkt-Meta.
+- Plugin leitet exclusion_flag pro Bestellposition ab.
+
+## Bestell-Match ohne Enumeration
+
+- Match nur ueber Kombi Bestellnummer + E-Mail.
+- Rate-Limiting pro IP (und ggf. pro Bestellnummer).
+- Antwort IMMER neutral, kein Hinweis ob Bestellung existiert.
+
+## Sicherheitsanforderungen
+
+- Nonces auf allen Formularen und Admin-Aktionen.
+- Capability-Checks (manage_woocommerce) im Backend.
+- Sanitize bei Eingabe, Escape bei Ausgabe.
+- Honeypot-Feld gegen Spam-Bots.
+- Prepared Statements fuer alle DB-Zugriffe.
+- HPOS-konform: Bestellzugriff nur via wc_get_order()/$order->get_meta().

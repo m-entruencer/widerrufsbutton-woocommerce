@@ -1,0 +1,46 @@
+/*
+ * Widerrufsbutton fuer WooCommerce - Admin-Styles.
+ */
+
+.wrb-admin .wrb-list th,
+.wrb-admin .wrb-list td {
+    vertical-align: middle;
+}
+
+.wrb-admin .wrb-detail {
+    max-width: 720px;
+    margin: 1rem 0 1.5rem;
+}
+
+.wrb-admin .wrb-detail th {
+    width: 220px;
+    text-align: left;
+}
+
+.wrb-admin .wrb-drafts {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    margin-top: 1rem;
+}
+
+.wrb-admin .wrb-draft {
+    background: #fff;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+}
+
+.wrb-admin .wrb-draft__preview {
+    background: #f6f7f7;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+}
+
+.wrb-admin .wrb-list-search .search-box {
+    margin: 1rem 0;
+    display: flex;
+    gap: 0.5rem;
+}

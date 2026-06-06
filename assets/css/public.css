@@ -1,0 +1,68 @@
+/*
+ * Widerrufsbutton fuer WooCommerce - Frontend-Grundlayout (neutral).
+ *
+ * White-Label: Farben/Radius NICHT hart setzen, sondern ueber
+ * Custom Properties (--wrb-*) steuern. Defaults sind bewusst neutral
+ * und werden pro Shop ueber die Settings ueberschrieben.
+ */
+
+.wrb-widget {
+    --wrb-accent: #444444;
+    --wrb-bg: #ffffff;
+    --wrb-text: #1a1a1a;
+    --wrb-radius: 6px;
+
+    color: var(--wrb-text);
+    background: var(--wrb-bg);
+    max-width: 32rem;
+}
+
+.wrb-button {
+    display: inline-block;
+    padding: 0.7em 1.4em;
+    border: 0;
+    border-radius: var(--wrb-radius);
+    font: inherit;
+    cursor: pointer;
+}
+
+.wrb-button--primary {
+    background: var(--wrb-accent);
+    color: var(--wrb-bg);
+}
+
+.wrb-form__row {
+    margin: 0 0 1rem;
+}
+
+.wrb-form__label {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.wrb-form__input {
+    width: 100%;
+    padding: 0.5em;
+    border: 1px solid currentColor;
+    border-radius: var(--wrb-radius);
+}
+
+.wrb-button--primary:hover {
+    filter: brightness(0.92);
+}
+
+/* Neutrale Bestaetigung nach Absenden. */
+.wrb-confirmation {
+    padding: 1rem 1.25rem;
+    border-radius: var(--wrb-radius);
+    border: 1px solid currentColor;
+}
+
+/* Honeypot: visuell und fuer Screenreader entfernt, aber im DOM. */
+.wrb-form__hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
