@@ -1,8 +1,8 @@
 # Technische Architektur
 
-## Ueberblick
+## Überblick
 
-Eigenstaendiges WooCommerce-Plugin. Klare Schichtentrennung:
+Eigenständiges WooCommerce-Plugin. Klare Schichtentrennung:
 Admin / Frontend / Mail / Domain / Repository / Product / Install.
 
 ## PSR-4 / Namespace
@@ -12,14 +12,14 @@ Admin / Frontend / Mail / Domain / Repository / Product / Install.
   Activation/Deactivation, plugins_loaded -> `Plugin::instance()->register()`).
 - Autoloader: bevorzugt `vendor/autoload.php`; fehlt es, registriert die Bootstrap-Datei
   einen schlanken PSR-4-Fallback (`spl_autoload_register`, `Entruencer\Widerruf\` -> `src/`).
-  Damit laeuft das Plugin out-of-the-box ohne `composer install` (relevant fuer ZIP-Deploy).
+  Damit läuft das Plugin out-of-the-box ohne `composer install` (relevant für ZIP-Deploy).
 
 ## Ordnerstruktur
 
 ```
 widerrufsbutton-wc/
   widerrufsbutton-wc.php     Bootstrap + Plugin-Header
-  uninstall.php             Loeschen nur bei aktivem Setting (Default: nein)
+  uninstall.php             Löschen nur bei aktivem Setting (Default: nein)
   composer.json             PSR-4-Mapping
   src/
     Plugin.php              Wiring aller Subsysteme (Singleton)
@@ -49,8 +49,8 @@ widerrufsbutton-wc/
 ## HPOS (High-Performance Order Storage)
 
 - `before_woocommerce_init`: `FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true)`.
-- Bestellzugriff ausschliesslich via `wc_get_order()` / `$order->get_meta()`.
-- NIEMALS direkte Queries auf wp_posts/postmeta fuer Bestelldaten.
+- Bestellzugriff ausschließlich via `wc_get_order()` / `$order->get_meta()`.
+- NIEMALS direkte Queries auf wp_posts/postmeta für Bestelldaten.
 
 ## Custom-Table-Schema ({prefix}entruencer_withdrawals)
 
@@ -84,11 +84,11 @@ widerrufsbutton-wc/
 - `EmailManager` registriert sie via Filter `woocommerce_email_classes` und bietet
   `trigger($type, $withdrawal)` (Versand) sowie `preview($type, $withdrawal)`
   (Backend-Vorschau via `WC_Email::get_content()`, kein Versand).
-- Absender, Betreff, Ueberschrift, Layout/Branding und An-/Abschaltung laufen ueber
+- Absender, Betreff, Überschrift, Layout/Branding und An-/Abschaltung laufen über
   WooCommerce -> Einstellungen -> E-Mails. Versand via `WC_Email::send()` (intern `wp_mail()`).
-- Templates ueberschreibbar nach WC-Konvention `<theme>/woocommerce/emails/...` (HTML + Plain),
+- Templates überschreibbar nach WC-Konvention `<theme>/woocommerce/emails/...` (HTML + Plain),
   Fallback im Plugin via `template_base = templates/`.
-- Eingangsbestaetigung wird automatisch beim Submit ausgeloest (`confirmation_mail_sent`
+- Eingangsbestätigung wird automatisch beim Submit ausgelöst (`confirmation_mail_sent`
   persistiert); Akzeptanz/Ablehnung nur nach 1-Klick-Freigabe; Betreiber-Benachrichtigung
   automatisch bei jedem Eingang.
 - Versandfehler -> `wp_mail_failed`-Capture (EmailManager::last_error) + Admin-Sichtbarkeit.
@@ -100,17 +100,17 @@ widerrufsbutton-wc/
 confirmation_message (Frontend-Text), accent_color, background_color, text_color, radius,
 delete_data_on_uninstall (Default false). Mail-Einstellungen liegen NICHT mehr hier,
 sondern in den WooCommerce-Mail-Settings (WC_Email). Setup-Version-Flag: `wrb_setup_version`.
-Vollstaendige Referenz: docs/anpassung.md.
+Vollständige Referenz: docs/anpassung.md.
 
 ## Update-Sicherheit
 
-- Daten in eigener Custom Table (kein CPT) -> stabil ueber Theme-/Plugin-Updates.
+- Daten in eigener Custom Table (kein CPT) -> stabil über Theme-/Plugin-Updates.
 - Schema-Versionsflag erlaubt kontrollierte Migrationen.
-- Deaktivierung loescht KEINE Daten; Deinstallation nur bei explizitem Setting.
+- Deaktivierung löscht KEINE Daten; Deinstallation nur bei explizitem Setting.
 
 ## White-Label-Mechanik
 
 - Keine festen Markenfarben/Texte im Code.
-- Sichtbare Werte aus Settings; CSS ueber Custom Properties `--wrb-accent`,
+- Sichtbare Werte aus Settings; CSS über Custom Properties `--wrb-accent`,
   `--wrb-bg`, `--wrb-text`, `--wrb-radius`.
 - Eine konkrete Shop-Brand (z.B. cream/sage) ist nur ein Konfig-Beispiel, NICHT Default.
