@@ -42,6 +42,38 @@ und ohne Abo.
 
 ---
 
+## Screenshots
+
+**Frontend-Button** — erscheint auf der Widerruf-Seite per Shortcode:
+
+![Frontend-Button](assets/screenshots/01-frontend-button.png)
+
+**Formular** — oeffnet sich nach Klick auf den Button:
+
+![Frontend-Formular](assets/screenshots/02-frontend-form.png)
+
+**Bestaetigung** — neutrale Rueckmeldung nach dem Absenden:
+
+![Frontend-Bestaetigung](assets/screenshots/03-frontend-confirmation.png)
+
+**Admin-Liste** — alle eingegangenen Widerrufe auf einen Blick:
+
+![Admin-Liste](assets/screenshots/04-admin-list.png)
+
+**Admin-Detail** — Metadaten + Entwuerfe fuer Akzeptanz und Ablehnung mit 1-Klick-Freigabe:
+
+![Admin-Detail](assets/screenshots/05-admin-detail.png)
+
+**Admin-Einstellungen** — Frist, Widerruf-Seite, Mails:
+
+![Admin-Einstellungen](assets/screenshots/06-admin-settings.png)
+
+**White-Label-Design** — Frontend-Farben und Eckenradius pro Shop konfigurierbar:
+
+![White-Label-Design](assets/screenshots/07-admin-design.png)
+
+---
+
 ## Schnellstart mit KI (empfohlen)
 
 Du musst das nicht selbst einbauen. Gib einem KI-Coding-Assistenten wie
