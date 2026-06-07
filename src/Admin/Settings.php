@@ -207,7 +207,7 @@ final class Settings
                             <option value="paid" <?php selected($s['deadline_start_basis'], 'paid'); ?>><?php esc_html_e('Zahlungsdatum', 'widerrufsbutton-wc'); ?></option>
                             <option value="completed" <?php selected($s['deadline_start_basis'], 'completed'); ?>><?php esc_html_e('Abschlussdatum (Lieferung/Erfuellung)', 'widerrufsbutton-wc'); ?></option>
                         </select>
-                        <p class="description"><?php esc_html_e('Rechtlich abhaengig vom Produkttyp - siehe docs/rechtsfragen.md.', 'widerrufsbutton-wc'); ?></p>
+                        <p class="description"><?php esc_html_e('Rechtlich abhängig vom Produkttyp (physisch, digital, Dienstleistung) und ob ein Widerrufsverzicht erklärt wurde.', 'widerrufsbutton-wc'); ?></p>
                     </td>
                 </tr>
             </table>
@@ -257,7 +257,7 @@ final class Settings
             <h2><?php esc_html_e('Design (Frontend-Widget)', 'widerrufsbutton-wc'); ?></h2>
             <table class="form-table" role="presentation">
                 <?php
-                $this->text_row($s, 'accent_color', __('Akzentfarbe (Hex, z.B. #1DA3C9)', 'widerrufsbutton-wc'));
+                $this->text_row($s, 'accent_color', __('Akzentfarbe (Hex, z.B. #0073aa)', 'widerrufsbutton-wc'));
                 $this->text_row($s, 'background_color', __('Hintergrundfarbe (Hex)', 'widerrufsbutton-wc'));
                 $this->text_row($s, 'text_color', __('Textfarbe (Hex)', 'widerrufsbutton-wc'));
                 $this->text_row($s, 'radius', __('Eckenradius (z.B. 12px)', 'widerrufsbutton-wc'));

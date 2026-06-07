@@ -1,6 +1,6 @@
 {
     "name": "entruencer/widerrufsbutton-wc",
-    "description": "White-Label-WooCommerce-Plugin der Entruencer UG fuer den gesetzlichen elektronischen Widerrufsbutton ab 19.06.2026 (EU-RL 2023/2673, Paragraf 312k BGB).",
+    "description": "Open-Source-Plugin für den ab 19.06.2026 gesetzlich verpflichtenden elektronischen Widerrufsbutton in WooCommerce (EU-RL 2023/2673, § 312k BGB).",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
     "require": {

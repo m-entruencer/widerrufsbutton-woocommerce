@@ -123,8 +123,6 @@ Betreff, Texte) werden über die nativen WooCommerce-Mail-Einstellungen gepflegt
 Templates sind im Theme überschreibbar, für Entwickler gibt es Filter-Hooks.
 
 Vollständige Referenz: **[docs/anpassung.md](docs/anpassung.md)**.
-Technische Architektur: **[docs/architecture.md](docs/architecture.md)**.
-Funktionale Spezifikation: **[docs/spec.md](docs/spec.md)**.
 
 ---
 

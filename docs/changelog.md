@@ -30,7 +30,7 @@
   Haftungsausschluss, GPLv2-LICENSE, Release v0.1.0 mit installierbarem ZIP.
 - ZIP-Build-Script build-zip.ps1: Forward-Slash-Pfade statt Compress-Archive
   (Backslash-Bug, auf Linux/WP-CLI unbrauchbar).
-- Live-Einsatz auf echtem Shop (Niccis Seite) erfolgreich verlaufen.
+- Erster Live-Einsatz auf einem echten WooCommerce-Shop erfolgreich verlaufen.
 
 ## 0.1.0
 - Erste funktionale Implementierung (Skeleton-Stubs ausgefüllt):
