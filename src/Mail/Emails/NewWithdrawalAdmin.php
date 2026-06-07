@@ -73,11 +73,11 @@ final class NewWithdrawalAdmin extends WithdrawalEmail
         $this->form_fields = array_merge(
             [
                 'recipient' => [
-                    'title'       => __('Empfaenger', 'widerrufsbutton-wc'),
+                    'title'       => __('Empfänger', 'widerrufsbutton-wc'),
                     'type'        => 'text',
                     'description' => sprintf(
                         /* translators: %s = Standard-Admin-E-Mail. */
-                        __('Empfaenger der Benachrichtigung. Mehrere durch Komma trennen. Standard: %s', 'widerrufsbutton-wc'),
+                        __('Empfänger der Benachrichtigung. Mehrere durch Komma trennen. Standard: %s', 'widerrufsbutton-wc'),
                         esc_html((string) get_option('admin_email'))
                     ),
                     'placeholder' => (string) get_option('admin_email'),

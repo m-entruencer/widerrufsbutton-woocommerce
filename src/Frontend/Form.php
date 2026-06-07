@@ -99,7 +99,7 @@ final class Form
         $msg = (string) Settings::get('confirmation_message');
 
         if (trim($msg) === '') {
-            $msg = __('Vielen Dank. Der Eingang deiner Erklaerung wurde bestaetigt. Du erhaeltst in Kuerze eine Bestaetigung per E-Mail.', 'widerrufsbutton-wc');
+            $msg = __('Vielen Dank. Der Eingang deiner Erklärung wurde bestätigt. Du erhältst in Kürze eine Bestätigung per E-Mail.', 'widerrufsbutton-wc');
         }
 
         $style = $this->inline_style();

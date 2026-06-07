@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+- Umlaute in allen nutzer-sichtbaren Strings korrigiert (Admin-Liste, Detailansicht,
+  Einstellungen, SetupNotice, Frontend-Bestaetigung, Mail-Einstellungen in WC).
+
 ## 0.2.0
 - Mailsystem von eigenem wp_mail() auf native WooCommerce-Mails (WC_Email) umgestellt.
   Vier Mail-Typen: Eingangsbestaetigung, Akzeptanz, Ablehnung (Kunde) und neue

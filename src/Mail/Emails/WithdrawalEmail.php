@@ -191,7 +191,7 @@ abstract class WithdrawalEmail extends \WC_Email
         $map = [
             CaseResolver::CASE_A => __('(in Frist, nicht ausgeschlossen)', 'widerrufsbutton-wc'),
             CaseResolver::CASE_B => __('(in Frist, ausgeschlossen)', 'widerrufsbutton-wc'),
-            CaseResolver::CASE_C => __('(ausserhalb Frist)', 'widerrufsbutton-wc'),
+            CaseResolver::CASE_C => __('(außerhalb Frist)', 'widerrufsbutton-wc'),
         ];
 
         return $map[$case] ?? '';

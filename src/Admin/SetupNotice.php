@@ -100,11 +100,11 @@ final class SetupNotice
         $settingsUrl = admin_url('admin.php?page=wrb-withdrawals&tab=settings');
 
         echo '<div class="notice notice-warning"><p><strong>'
-            . esc_html__('Widerrufsbutton: Einrichtung unvollstaendig.', 'widerrufsbutton-wc')
+            . esc_html__('Widerrufsbutton: Einrichtung unvollständig.', 'widerrufsbutton-wc')
             . '</strong> '
             . sprintf(
                 /* translators: 1: Shortcode, 2: Link zu den Einstellungen. */
-                esc_html__('Es wurde keine veroeffentlichte Seite mit dem Shortcode %1$s gefunden. Lege eine Seite mit dem Shortcode an oder pruefe die %2$s.', 'widerrufsbutton-wc'),
+                esc_html__('Es wurde keine veröffentlichte Seite mit dem Shortcode %1$s gefunden. Lege eine Seite mit dem Shortcode an oder prüfe die %2$s.', 'widerrufsbutton-wc'),
                 '<code>[' . esc_html(Form::SHORTCODE) . ']</code>',
                 '<a href="' . esc_url($settingsUrl) . '">' . esc_html__('Einstellungen', 'widerrufsbutton-wc') . '</a>'
             )
@@ -131,7 +131,7 @@ final class SetupNotice
         }
 
         echo '<div class="notice notice-info"><p>'
-            . esc_html__('Widerrufsbutton: Fuer eine zuverlaessige Zustellung der Widerruf-Mails (gesetzliche Eingangsbestaetigung) wird ein SMTP-/Mailversand-Plugin empfohlen, z.B. WP Mail SMTP oder FluentSMTP. Ohne sauberen Versand koennen Mails im Spam landen.', 'widerrufsbutton-wc')
+            . esc_html__('Widerrufsbutton: Für eine zuverlässige Zustellung der Widerruf-Mails (gesetzliche Eingangsbestätigung) wird ein SMTP-/Mailversand-Plugin empfohlen, z.B. WP Mail SMTP oder FluentSMTP. Ohne sauberen Versand können Mails im Spam landen.', 'widerrufsbutton-wc')
             . ' <a href="' . esc_url($this->dismiss_url('smtp')) . '">'
             . esc_html__('Hinweis ausblenden', 'widerrufsbutton-wc')
             . '</a></p></div>';
@@ -168,7 +168,7 @@ final class SetupNotice
         echo '<div class="notice notice-info"><p>'
             . sprintf(
                 /* translators: %s = Link zu den WooCommerce-E-Mail-Einstellungen. */
-                esc_html__('Widerrufsbutton: Die Mail-Einstellungen laufen ab Version 0.2.0 zentral ueber %s. Deine alten Plugin-Mailtexte werden nicht mehr verwendet.', 'widerrufsbutton-wc'),
+                esc_html__('Widerrufsbutton: Die Mail-Einstellungen laufen ab Version 0.2.0 zentral über %s. Deine alten Plugin-Mailtexte werden nicht mehr verwendet.', 'widerrufsbutton-wc'),
                 '<a href="' . esc_url($emailUrl) . '">' . esc_html__('WooCommerce -> Einstellungen -> E-Mails', 'widerrufsbutton-wc') . '</a>'
             )
             . ' <a href="' . esc_url($this->dismiss_url('migration')) . '">'

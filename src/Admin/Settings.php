@@ -249,9 +249,9 @@ final class Settings
                 ?>
             </p>
 
-            <h2><?php esc_html_e('Oeffentliche Bestaetigung', 'widerrufsbutton-wc'); ?></h2>
+            <h2><?php esc_html_e('Öffentliche Bestätigung', 'widerrufsbutton-wc'); ?></h2>
             <table class="form-table" role="presentation">
-                <?php $this->textarea_row($s, 'confirmation_message', __('Bestaetigungstext nach Absenden', 'widerrufsbutton-wc')); ?>
+                <?php $this->textarea_row($s, 'confirmation_message', __('Bestätigungstext nach Absenden', 'widerrufsbutton-wc')); ?>
             </table>
 
             <h2><?php esc_html_e('Design (Frontend-Widget)', 'widerrufsbutton-wc'); ?></h2>
@@ -267,7 +267,7 @@ final class Settings
             <h2><?php esc_html_e('Deinstallation', 'widerrufsbutton-wc'); ?></h2>
             <table class="form-table" role="presentation">
                 <tr>
-                    <th scope="row"><?php esc_html_e('Daten bei Deinstallation loeschen', 'widerrufsbutton-wc'); ?></th>
+                    <th scope="row"><?php esc_html_e('Daten bei Deinstallation löschen', 'widerrufsbutton-wc'); ?></th>
                     <td>
                         <label>
                             <input type="checkbox" name="<?php echo esc_attr(self::OPTION); ?>[delete_data_on_uninstall]" value="1" <?php checked(!empty($s['delete_data_on_uninstall'])); ?> />

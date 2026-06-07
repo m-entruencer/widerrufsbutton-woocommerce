@@ -120,8 +120,8 @@ final class Menu
 
         $map = [
             'sent'     => ['updated', __('Entscheidung versendet und Status aktualisiert.', 'widerrufsbutton-wc')],
-            'failed'   => ['error', __('Versand fehlgeschlagen. Bitte Mail-Konfiguration pruefen.', 'widerrufsbutton-wc')],
-            'invalid'  => ['error', __('Ungueltige Anfrage.', 'widerrufsbutton-wc')],
+            'failed'   => ['error', __('Versand fehlgeschlagen. Bitte Mail-Konfiguration prüfen.', 'widerrufsbutton-wc')],
+            'invalid'  => ['error', __('Ungültige Anfrage.', 'widerrufsbutton-wc')],
         ];
 
         if (!isset($map[$msg])) {
@@ -181,7 +181,7 @@ final class Menu
             </thead>
             <tbody>
             <?php if ($rows === []) : ?>
-                <tr><td colspan="8"><?php esc_html_e('Keine Eintraege.', 'widerrufsbutton-wc'); ?></td></tr>
+                <tr><td colspan="8"><?php esc_html_e('Keine Einträge.', 'widerrufsbutton-wc'); ?></td></tr>
             <?php else : ?>
                 <?php foreach ($rows as $row) : ?>
                     <tr>
@@ -232,7 +232,7 @@ final class Menu
         $acceptance = EmailManager::preview('acceptance', $row);
         $rejection  = EmailManager::preview('rejection', $row);
 
-        echo '<p><a href="' . esc_url($base) . '">&laquo; ' . esc_html__('Zurueck zur Liste', 'widerrufsbutton-wc') . '</a></p>';
+        echo '<p><a href="' . esc_url($base) . '">&laquo; ' . esc_html__('Zurück zur Liste', 'widerrufsbutton-wc') . '</a></p>';
 
         // Stammdaten.
         $fields = [
@@ -247,7 +247,7 @@ final class Menu
             __('Frist (Tage)', 'widerrufsbutton-wc')      => (string) $row['deadline_days_snapshot'],
             __('Ausgeschlossen', 'widerrufsbutton-wc')    => $row['excluded_flag'] ? __('Ja', 'widerrufsbutton-wc') : __('Nein', 'widerrufsbutton-wc'),
             __('Ausschluss-Grund', 'widerrufsbutton-wc')  => (string) $row['exclusion_reason'],
-            __('Eingangsbestaetigung', 'widerrufsbutton-wc') => $row['confirmation_mail_sent'] ? __('versendet', 'widerrufsbutton-wc') : __('nicht versendet', 'widerrufsbutton-wc'),
+            __('Eingangsbestätigung', 'widerrufsbutton-wc') => $row['confirmation_mail_sent'] ? __('versendet', 'widerrufsbutton-wc') : __('nicht versendet', 'widerrufsbutton-wc'),
             __('Status', 'widerrufsbutton-wc')            => $this->status_label((string) $row['status']),
         ];
 
@@ -361,7 +361,7 @@ final class Menu
         $map = [
             CaseResolver::CASE_A => __('(in Frist, nicht ausgeschlossen)', 'widerrufsbutton-wc'),
             CaseResolver::CASE_B => __('(in Frist, ausgeschlossen)', 'widerrufsbutton-wc'),
-            CaseResolver::CASE_C => __('(ausserhalb Frist)', 'widerrufsbutton-wc'),
+            CaseResolver::CASE_C => __('(außerhalb Frist)', 'widerrufsbutton-wc'),
         ];
 
         return $map[$case] ?? '';

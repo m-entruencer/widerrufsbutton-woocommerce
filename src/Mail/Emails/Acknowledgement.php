@@ -23,8 +23,8 @@ final class Acknowledgement extends WithdrawalEmail
     {
         $this->id             = 'wrb_acknowledgement';
         $this->customer_email = true;
-        $this->title          = __('Widerruf: Eingangsbestaetigung', 'widerrufsbutton-wc');
-        $this->description    = __('Neutrale, gesetzlich verpflichtende Eingangsbestaetigung an den Kunden. Geht in allen Faellen automatisch raus.', 'widerrufsbutton-wc');
+        $this->title          = __('Widerruf: Eingangsbestätigung', 'widerrufsbutton-wc');
+        $this->description    = __('Neutrale, gesetzlich verpflichtende Eingangsbestätigung an den Kunden. Geht in allen Fällen automatisch raus.', 'widerrufsbutton-wc');
         $this->template_html  = 'emails/customer-acknowledgement.php';
         $this->template_plain = 'emails/plain/customer-acknowledgement.php';
         $this->placeholders   = [
@@ -40,11 +40,11 @@ final class Acknowledgement extends WithdrawalEmail
 
     public function get_default_subject(): string
     {
-        return __('Eingangsbestaetigung deines Widerrufs', 'widerrufsbutton-wc');
+        return __('Eingangsbestätigung deines Widerrufs', 'widerrufsbutton-wc');
     }
 
     public function get_default_heading(): string
     {
-        return __('Eingang deines Widerrufs bestaetigt', 'widerrufsbutton-wc');
+        return __('Eingang deines Widerrufs bestätigt', 'widerrufsbutton-wc');
     }
 }

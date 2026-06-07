@@ -56,7 +56,7 @@ final class ExclusionField
         woocommerce_wp_textarea_input([
             'id'          => self::META_REASON,
             'label'       => __('Ausschluss-Grund', 'widerrufsbutton-wc'),
-            'description' => __('Wird intern als Begruendung uebernommen.', 'widerrufsbutton-wc'),
+            'description' => __('Wird intern als Begründung übernommen.', 'widerrufsbutton-wc'),
             'desc_tip'    => true,
         ]);
 

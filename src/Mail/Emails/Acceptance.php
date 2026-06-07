@@ -23,7 +23,7 @@ final class Acceptance extends WithdrawalEmail
         $this->id             = 'wrb_acceptance';
         $this->customer_email = true;
         $this->title          = __('Widerruf: Akzeptanz', 'widerrufsbutton-wc');
-        $this->description    = __('Bestaetigung an den Kunden, dass der Widerruf akzeptiert wurde. Versand nur nach manueller Freigabe im Backend.', 'widerrufsbutton-wc');
+        $this->description    = __('Bestätigung an den Kunden, dass der Widerruf akzeptiert wurde. Versand nur nach manueller Freigabe im Backend.', 'widerrufsbutton-wc');
         $this->template_html  = 'emails/customer-acceptance.php';
         $this->template_plain = 'emails/plain/customer-acceptance.php';
         $this->placeholders   = [
