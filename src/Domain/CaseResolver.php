@@ -39,7 +39,6 @@ final class CaseResolver
      */
     public function resolve(bool $inDeadline, bool $excluded): string
     {
-        // TODO: tatsaechliche Ableitung implementieren.
         if (!$inDeadline) {
             return self::CASE_C;
         }

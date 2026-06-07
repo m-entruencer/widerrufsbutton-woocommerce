@@ -51,9 +51,9 @@ Anpassung im Detail: siehe docs/anpassung.md.
 = 0.2.0 =
 * Mailsystem komplett auf native WooCommerce-Mails (WC_Email) umgestellt: Absender, Betreff, Texte und Layout laufen über WooCommerce -> Einstellungen -> E-Mails.
 * Neue Benachrichtigung an den Shop-Betreiber bei jedem neuen Widerruf (Empfänger konfigurierbar, Direktlink zur Freigabe).
-* DAU-Setup: automatische Anlage der Widerruf-Seite mit Shortcode bei Aktivierung (Slug konfigurierbar, keine Dublette).
+* Auto-Setup: automatische Anlage der Widerruf-Seite mit Shortcode bei Aktivierung (Slug konfigurierbar, keine Dublette).
 * Admin-Hinweise für unvollständiges Setup und fehlenden SMTP-Versand.
-* Eigene Mail-Settings (Absender/Betreff/Texte) und Markenfelder entfernt - schlanker und DAU-tauglich.
+* Eigene Mail-Settings (Absender/Betreff/Texte) und Markenfelder entfernt - schlanker und einfacher einzurichten.
 
 = 0.1.0 =
 * Erste funktionale Implementierung: Frontend-Flow, Eingangsbestätigung, Custom-Table-Persistenz, Admin-Liste/Detail mit 1-Klick-Freigabe, White-Label-Settings, Produkt-Flag, Autoloader-Fallback.

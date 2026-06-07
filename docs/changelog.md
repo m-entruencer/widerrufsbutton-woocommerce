@@ -15,7 +15,7 @@
   - Entfernt: src/Mail/Mailer.php und die alten templates/emails/{acknowledgement,
     acceptance,rejection}.php.
 - Admin-Benachrichtigung bei neuem Widerruf (Empfänger via WC-Settings, Direktlink zur Freigabe).
-- DAU-Setup: src/Install/PageInstaller.php legt bei Aktivierung/Update idempotent eine
+- Auto-Setup: src/Install/PageInstaller.php legt bei Aktivierung/Update idempotent eine
   Widerruf-Seite mit Shortcode an (Slug via Setting withdrawal_page_slug, keine Dublette).
   Eingebunden in Migrator::activate() und Migrator::maybe_upgrade() (Setup-Version-Flag).
 - Admin-Hinweise: src/Admin/SetupNotice.php (Setup-Status, SMTP-Empfehlung, Migrationshinweis).
@@ -24,10 +24,8 @@
 - Theme-Override-Konvention der Mail-Templates: <theme>/woocommerce/emails/...
 
 ## 0.1.0 - Public Release (2026-06-06)
-- Plugin als Open-Source-Community-Projekt veröffentlicht:
-  github.com/m-entruencer/widerrufsbutton-woocommerce (PUBLIC, GPL-2.0-or-later).
-  Kuratierte Kopie ohne interne Docs, eigene History, README mit KI-Schnellstart +
-  Haftungsausschluss, GPLv2-LICENSE, Release v0.1.0 mit installierbarem ZIP.
+- Plugin als Open-Source-Community-Projekt unter GPL-2.0-or-later veröffentlicht.
+  README mit KI-Schnellstart, Haftungsausschluss und installierbarem ZIP.
 - ZIP-Build-Script build-zip.ps1: Forward-Slash-Pfade statt Compress-Archive
   (Backslash-Bug, auf Linux/WP-CLI unbrauchbar).
 - Erster Live-Einsatz auf einem echten WooCommerce-Shop erfolgreich verlaufen.

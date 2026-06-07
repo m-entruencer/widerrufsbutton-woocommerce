@@ -16,12 +16,11 @@ if (!defined('ABSPATH')) {
 /**
  * Berechnet, ob ein Widerruf innerhalb der Widerrufsfrist liegt.
  *
- * Fristbeginn-Annahmen (rechtlich vor Implementierung zu bestaetigen,
- * siehe docs/rechtsfragen.md):
+ * Fristbeginn-Annahmen (bitte für den konkreten Shop-Typ rechtlich prüfen):
  *  - Waren: Fristbeginn mit Erhalt der Ware durch den Verbraucher.
- *  - Digitale Inhalte / Dienstleistungen: Fristbeginn grundsaetzlich mit
- *    Vertragsschluss. Bei sofortiger Ausfuehrung kann die Frist mit
- *    wirksamem Verzicht entfallen (offen, Rechtsklaerung erforderlich).
+ *  - Digitale Inhalte / Dienstleistungen: Fristbeginn grundsätzlich mit
+ *    Vertragsschluss. Bei sofortiger Ausführung und wirksamem Verzicht
+ *    kann die Frist entfallen — im Einzelfall rechtlich prüfen.
  *
  * Dieser Calculator arbeitet bewusst mit einem uebergebenen Fristbeginn
  * (order_date_snapshot) und der konfigurierten Fristlaenge. Die Ableitung

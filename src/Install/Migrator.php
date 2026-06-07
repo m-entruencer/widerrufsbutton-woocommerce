@@ -88,7 +88,7 @@ final class Migrator
     /**
      * Erstellt bzw. aktualisiert die Custom Table via dbDelta().
      *
-     * Felder gemaess Spezifikation (siehe docs/architecture.md).
+     * Erstellt die Custom Table mit allen Feldern für Widerrufe.
      */
     private static function create_tables(): void
     {
