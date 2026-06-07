@@ -1,7 +1,8 @@
 # Funktionale Spezifikation
 
-Plugin: Widerrufsbutton für WooCommerce (White-Label, Open Source).
+Plugin: Widerrufsbutton für WooCommerce (White-Label, intern Entruencer UG).
 Rechtsgrundlage: EU-RL 2023/2673, Paragraf 312k BGB, verpflichtend ab 19.06.2026.
+Quelle der Pflichten: IT-Recht-Kanzlei + Stripe.
 
 ## Gesetzliche Pflichtbestandteile (Checkliste)
 

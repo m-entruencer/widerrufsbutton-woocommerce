@@ -1,11 +1,11 @@
-== Widerrufsbutton für WooCommerce ==
+== Widerrufsbutton fuer WooCommerce ==
 Contributors: entruencer
 Tags: woocommerce, widerruf, withdrawal, eu, compliance
 Requires at least: 6.4
 Tested up to: 6.5
 Requires PHP: 8.1
 WC requires at least: 8.0
-Stable tag: 0.1.0
+Stable tag: 0.2.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,11 +19,14 @@ Funktionsumfang:
 
 * Zweistufiger oeffentlicher Widerruf-Flow (Button -> Formular mit Name, Bestellnummer, E-Mail) via Shortcode [widerrufsbutton].
 * Automatische, neutrale Eingangsbestaetigung per E-Mail (gesetzliche Pflicht) mit Datum und Uhrzeit.
+* Benachrichtigung an den Shop-Betreiber bei jedem neuen Widerruf (Empfaenger konfigurierbar, Direktlink zur Freigabe).
+* Native WooCommerce-Mails: Absender, Betreff, Texte und Layout aller vier Widerruf-Mails laufen ueber WooCommerce -> Einstellungen -> E-Mails.
+* Automatisches Setup: legt bei Aktivierung eine Seite mit dem Shortcode [widerrufsbutton] an (Slug konfigurierbar, keine Duplikate).
 * Fallbasierte Vorklassifizierung A/B/C; Akzeptanz UND Ablehnung als Entwurf mit manueller 1-Klick-Freigabe (keine automatische Entscheidung).
 * Produkt-Flag "Vom Widerruf ausgeschlossen" inkl. Freitext-Grund.
 * Bestell-Match ohne Enumeration (Bestellnummer + E-Mail, Rate-Limiting, neutrale Antwort).
 * HPOS-konform, eigene Custom Table fuer Widerrufe.
-* White-Label: alle Marken-, Mail- und Textwerte sowie Farben/Radius pro Shop konfigurierbar.
+* White-Label: Frontend-Farben und Eckenradius pro Shop konfigurierbar (CSS-Custom-Properties).
 
 Frei nutzbar unter der GPL. Bereitgestellt von der Entruencer UG als Beitrag zur Community.
 
@@ -32,15 +35,22 @@ Haftungsausschluss: Dieses Plugin wird ohne jede Gewaehr bereitgestellt. Es stel
 == Installation ==
 
 1. Plugin-Verzeichnis nach wp-content/plugins/widerrufsbutton-wc/ kopieren (oder ZIP ueber Plugins -> Installieren hochladen).
-2. Plugin im WordPress-Backend aktivieren (legt die Custom Table an). Ein "composer install" ist NICHT noetig - ein Autoloader-Fallback ist eingebaut.
-3. Seite anlegen und [widerrufsbutton] einfuegen.
-4. Unter WooCommerce -> Widerrufe die Einstellungen (Frist, Absender, Mail-Texte, White-Label) pflegen.
+2. Plugin im WordPress-Backend aktivieren. Dabei werden die Custom Table und automatisch eine Seite "Widerruf" mit dem Shortcode [widerrufsbutton] angelegt. Ein "composer install" ist NICHT noetig - ein Autoloader-Fallback ist eingebaut.
+3. Optional: Mails (Absender, Betreff, Texte, Layout) unter WooCommerce -> Einstellungen -> E-Mails anpassen. Fuer zuverlaessige Zustellung ein SMTP-Plugin nutzen.
+4. Optional: Unter WooCommerce -> Widerrufe -> Einstellungen Frist, Widerruf-Seite (Slug) und Frontend-Design pflegen.
 
 Voraussetzungen: WordPress 6.4+, PHP 8.1+, WooCommerce 8.0+ (HPOS empfohlen).
 
 Anpassung im Detail: siehe docs/anpassung.md.
 
 == Changelog ==
+
+= 0.2.0 =
+* Mailsystem komplett auf native WooCommerce-Mails (WC_Email) umgestellt: Absender, Betreff, Texte und Layout laufen ueber WooCommerce -> Einstellungen -> E-Mails.
+* Neue Benachrichtigung an den Shop-Betreiber bei jedem neuen Widerruf (Empfaenger konfigurierbar, Direktlink zur Freigabe).
+* DAU-Setup: automatische Anlage der Widerruf-Seite mit Shortcode bei Aktivierung (Slug konfigurierbar, keine Duplikate).
+* Admin-Hinweise fuer unvollstaendiges Setup und fehlenden SMTP-Versand.
+* Eigene Mail-Settings (Absender/Betreff/Texte) und Markenfelder entfernt - schlanker und DAU-tauglich.
 
 = 0.1.0 =
 * Erste funktionale Implementierung: Frontend-Flow, Eingangsbestaetigung, Custom-Table-Persistenz, Admin-Liste/Detail mit 1-Klick-Freigabe, White-Label-Settings, Produkt-Flag, Autoloader-Fallback.

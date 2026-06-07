@@ -11,8 +11,9 @@ namespace Entruencer\Widerruf;
 
 use Entruencer\Widerruf\Admin\Menu;
 use Entruencer\Widerruf\Admin\Settings;
+use Entruencer\Widerruf\Admin\SetupNotice;
 use Entruencer\Widerruf\Frontend\Form;
-use Entruencer\Widerruf\Mail\Mailer;
+use Entruencer\Widerruf\Mail\EmailManager;
 use Entruencer\Widerruf\Product\ExclusionField;
 
 if (!defined('ABSPATH')) {
@@ -65,7 +66,8 @@ final class Plugin
         (new Menu())->register();
         (new Form())->register();
         (new ExclusionField())->register();
-        (new Mailer())->register();
+        (new EmailManager())->register();
+        (new SetupNotice())->register();
     }
 
     /**

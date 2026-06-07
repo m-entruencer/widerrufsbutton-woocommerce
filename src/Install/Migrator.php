@@ -30,6 +30,11 @@ final class Migrator
     public const SCHEMA_OPTION = 'wrb_schema_version';
 
     /**
+     * Option-Key fuer die zuletzt eingerichtete Plugin-Version (Setup-Steps wie Auto-Seite).
+     */
+    public const SETUP_OPTION = 'wrb_setup_version';
+
+    /**
      * Tabellen-Basisname (ohne wpdb-Prefix).
      */
     public const TABLE = 'entruencer_withdrawals';
@@ -42,8 +47,9 @@ final class Migrator
         self::create_tables();
         update_option(self::SCHEMA_OPTION, self::SCHEMA_VERSION);
 
-        // TODO: Default-Settings anlegen, falls noch nicht vorhanden.
-        // TODO: ggf. Rewrite-Rules fuer die oeffentliche Widerruf-Seite flushen.
+        // DAU-Setup: Widerruf-Seite mit Shortcode sicherstellen.
+        PageInstaller::ensure_page();
+        update_option(self::SETUP_OPTION, WRB_VERSION);
     }
 
     /**
@@ -69,6 +75,13 @@ final class Migrator
             self::create_tables();
             update_option(self::SCHEMA_OPTION, self::SCHEMA_VERSION);
             // TODO: versionsspezifische Daten-Migrationen ausfuehren.
+        }
+
+        // Setup-Steps (z.B. Auto-Seite) einmalig pro Plugin-Version nachziehen -
+        // greift auch bei Update via ZIP-Upload ohne Reaktivierung.
+        if ((string) get_option(self::SETUP_OPTION, '') !== WRB_VERSION) {
+            PageInstaller::ensure_page();
+            update_option(self::SETUP_OPTION, WRB_VERSION);
         }
     }
 

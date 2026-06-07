@@ -25,16 +25,20 @@ widerrufsbutton-wc/
     Plugin.php              Wiring aller Subsysteme (Singleton)
     Install/Migrator.php    dbDelta, Schema-Version, Activation/Deactivation
     Admin/Menu.php          WC-Submenue "Widerrufe", Liste/Detail, 1-Klick-Freigabe
-    Admin/Settings.php      White-Label-Settings-Schema
+    Admin/Settings.php      Settings-Schema (Frist, Seite, Frontend-Design)
+    Admin/SetupNotice.php   Admin-Hinweise (Setup-Status, SMTP, Migration)
     Frontend/Form.php       Shortcode [widerrufsbutton] + Submit-Verarbeitung
     Domain/DeadlineCalculator.php  Fristberechnung
     Domain/CaseResolver.php Fall A/B/C
     Domain/OrderMatcher.php Match ohne Enumeration
     Repository/WithdrawalRepository.php  CRUD Custom Table
-    Mail/Mailer.php         wp_mail + ueberschreibbare Templates
+    Mail/EmailManager.php   Registrierung + Trigger/Preview der WC_Emails
+    Mail/Emails/*.php       WC_Email-Klassen (Basis WithdrawalEmail + 4 Mail-Typen)
+    Install/PageInstaller.php  Auto-Anlage der Widerruf-Seite (idempotent)
     Product/ExclusionField.php  Produkt-Datentab-Feld
   templates/
-    emails/{acknowledgement,acceptance,rejection}.php
+    emails/{customer-acknowledgement,customer-acceptance,customer-rejection,admin-new-withdrawal}.php
+    emails/plain/...        Plain-Text-Varianten der Mail-Templates
     frontend/form.php
   assets/css/{public,admin}.css
   assets/js/public.js
@@ -73,21 +77,30 @@ widerrufsbutton-wc/
 - Schema-Version in wp_option `wrb_schema_version` (`Migrator::SCHEMA_VERSION`).
 - Upgrade-Check bei `admin_init` (`Migrator::maybe_upgrade`).
 
-## Mail-Layer
+## Mail-Layer (native WooCommerce-Mails, WC_Email)
 
-- `Mailer` baut/sendet ueber `wp_mail()`.
-- Templates ueberschreibbar: zuerst `<theme>/widerrufsbutton-wc/<pfad>`, sonst Plugin.
-- `send_acknowledgement()` neutral, Datum+Uhrzeit Pflicht, Versandstatus persistiert.
-- `build_acceptance()` (Fall A), `build_rejection_draft()` (Fall B/C, nur nach Freigabe).
-- Versandfehler -> Log + Admin-Sichtbarkeit.
+- Vier WC_Email-Klassen unter `src/Mail/Emails/` mit gemeinsamer Basis `WithdrawalEmail`:
+  `Acknowledgement`, `Acceptance`, `Rejection` (Kunde) und `NewWithdrawalAdmin` (Betreiber).
+- `EmailManager` registriert sie via Filter `woocommerce_email_classes` und bietet
+  `trigger($type, $withdrawal)` (Versand) sowie `preview($type, $withdrawal)`
+  (Backend-Vorschau via `WC_Email::get_content()`, kein Versand).
+- Absender, Betreff, Ueberschrift, Layout/Branding und An-/Abschaltung laufen ueber
+  WooCommerce -> Einstellungen -> E-Mails. Versand via `WC_Email::send()` (intern `wp_mail()`).
+- Templates ueberschreibbar nach WC-Konvention `<theme>/woocommerce/emails/...` (HTML + Plain),
+  Fallback im Plugin via `template_base = templates/`.
+- Eingangsbestaetigung wird automatisch beim Submit ausgeloest (`confirmation_mail_sent`
+  persistiert); Akzeptanz/Ablehnung nur nach 1-Klick-Freigabe; Betreiber-Benachrichtigung
+  automatisch bei jedem Eingang.
+- Versandfehler -> `wp_mail_failed`-Capture (EmailManager::last_error) + Admin-Sichtbarkeit.
 
-## Settings-Schema (White-Label)
+## Settings-Schema
 
-`wrb_settings` (Array). Felder u.a.: deadline_days (Default 14), deadline_start_basis
-(created/paid/completed), sender_name, sender_email, reply_to, subject_*/body_* je Fall,
-confirmation_message, brand_name, brand_logo_url, accent_color, background_color,
-text_color, radius, delete_data_on_uninstall (Default false). Vollstaendige Referenz:
-docs/anpassung.md.
+`wrb_settings` (Array). Felder: deadline_days (Default 14), deadline_start_basis
+(created/paid/completed), withdrawal_page_slug (Default 'widerruf'), withdrawal_page_id,
+confirmation_message (Frontend-Text), accent_color, background_color, text_color, radius,
+delete_data_on_uninstall (Default false). Mail-Einstellungen liegen NICHT mehr hier,
+sondern in den WooCommerce-Mail-Settings (WC_Email). Setup-Version-Flag: `wrb_setup_version`.
+Vollstaendige Referenz: docs/anpassung.md.
 
 ## Update-Sicherheit
 

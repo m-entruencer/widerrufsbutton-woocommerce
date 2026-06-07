@@ -1,17 +1,17 @@
 <?php
 /**
- * Mail-Template: Eingangsbestaetigung (neutral, white-label).
+ * WC-Email-Template (HTML): Eingangsbestaetigung an den Kunden.
  *
- * Gesetzliche Pflicht. Geht in ALLEN Faellen sofort raus.
+ * Neutrale, gesetzlich verpflichtende Eingangsbestaetigung.
  * Datum UND Uhrzeit sind Pflichtbestandteil.
  *
- * Ueberschreibbar via Theme: <theme>/widerrufsbutton-wc/emails/acknowledgement.php
+ * Ueberschreibbar via Theme: <theme>/woocommerce/emails/customer-acknowledgement.php
  *
- * Verfuegbare Variablen (vom Mailer gesetzt, TODO):
- *  - string $brand_name  White-Label-Absendername.
- *  - string $datum       Eingangsdatum (lokalisiert).
- *  - string $uhrzeit     Eingangsuhrzeit (lokalisiert).
- *  - string $reference   Neutrale Vorgangsreferenz (KEIN Hinweis auf Bestell-Existenz).
+ * Verfuegbare Variablen:
+ *  - string $datum, $uhrzeit  Eingangszeitpunkt (lokalisiert).
+ *  - string $reference        Neutrale Vorgangsreferenz (z.B. WRB-123).
+ *  - string $email_heading    Ueberschrift aus den WC-Mail-Einstellungen.
+ *  - WC_Email $email          Die Mail-Instanz (fuer Header/Footer-Hooks).
  *
  * @package Entruencer\Widerruf
  */
@@ -20,10 +20,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$brand_name = $brand_name ?? '';
-$datum      = $datum ?? '';
-$uhrzeit    = $uhrzeit ?? '';
-$reference  = $reference ?? '';
+do_action('woocommerce_email_header', $email_heading, $email);
 ?>
 <p><?php esc_html_e('Guten Tag,', 'widerrufsbutton-wc'); ?></p>
 
@@ -43,5 +40,5 @@ printf(
 <?php if ($reference !== '') : ?>
 <p><?php printf(esc_html__('Vorgangsreferenz: %s', 'widerrufsbutton-wc'), esc_html($reference)); ?></p>
 <?php endif; ?>
-
-<p><?php echo esc_html($brand_name); ?></p>
+<?php
+do_action('woocommerce_email_footer', $email);

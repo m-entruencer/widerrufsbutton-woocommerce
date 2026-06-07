@@ -16,7 +16,9 @@ if (!defined('ABSPATH')) {
 /**
  * Definiert und verwaltet das Settings-Schema.
  *
- * Alle Marken-, Mail- und Textwerte sind hier konfigurierbar.
+ * Frist, Widerruf-Seite, oeffentlicher Bestaetigungstext und Frontend-Design.
+ * Mail-Einstellungen (Absender/Betreff/Texte/Layout) laufen ueber die
+ * WooCommerce-Mail-Settings (WC_Email), nicht mehr hier.
  * KEINE festen Markenfarben/Texte im Code (White-Label-Prinzip).
  */
 final class Settings
@@ -56,27 +58,14 @@ final class Settings
             'deadline_days'             => 14,
             'deadline_start_basis'      => 'created',
 
-            // Absender / Mail-Kopf.
-            'sender_name'               => '',
-            'sender_email'              => '',
-            'reply_to'                  => '',
+            // Widerruf-Seite (Auto-Setup).
+            'withdrawal_page_id'        => 0,
+            'withdrawal_page_slug'      => 'widerruf',
 
-            // Betreffzeilen pro Fall.
-            'subject_acknowledgement'   => '',
-            'subject_acceptance'        => '',
-            'subject_rejection'         => '',
-
-            // Mail-Texte pro Fall (Platzhalter-faehig: {brand_name}, {datum}, {uhrzeit}, {reference}, {reason}).
-            'body_acknowledgement'      => '',
-            'body_acceptance'           => '',
-            'body_rejection'            => '',
-
-            // Oeffentliche neutrale Bestaetigung nach Absenden.
+            // Oeffentliche neutrale Bestaetigung nach Absenden (Frontend, keine Mail).
             'confirmation_message'      => '',
 
-            // White-Label-Felder.
-            'brand_name'                => '',
-            'brand_logo_url'            => '',
+            // Frontend-Design (CSS Custom Properties).
             'accent_color'              => '',
             'background_color'          => '',
             'text_color'                => '',
@@ -169,20 +158,12 @@ final class Settings
         $basis = (string) ($input['deadline_start_basis'] ?? 'created');
         $out['deadline_start_basis'] = in_array($basis, self::DEADLINE_BASES, true) ? $basis : 'created';
 
-        $out['sender_name'] = sanitize_text_field((string) ($input['sender_name'] ?? ''));
-        $out['sender_email'] = sanitize_email((string) ($input['sender_email'] ?? ''));
-        $out['reply_to'] = sanitize_email((string) ($input['reply_to'] ?? ''));
+        $out['withdrawal_page_id'] = max(0, (int) ($input['withdrawal_page_id'] ?? 0));
 
-        foreach (['subject_acknowledgement', 'subject_acceptance', 'subject_rejection'] as $key) {
-            $out[$key] = sanitize_text_field((string) ($input[$key] ?? ''));
-        }
+        $slug = sanitize_title((string) ($input['withdrawal_page_slug'] ?? 'widerruf'));
+        $out['withdrawal_page_slug'] = $slug !== '' ? $slug : 'widerruf';
 
-        foreach (['body_acknowledgement', 'body_acceptance', 'body_rejection', 'confirmation_message'] as $key) {
-            $out[$key] = wp_kses_post((string) ($input[$key] ?? ''));
-        }
-
-        $out['brand_name'] = sanitize_text_field((string) ($input['brand_name'] ?? ''));
-        $out['brand_logo_url'] = esc_url_raw((string) ($input['brand_logo_url'] ?? ''));
+        $out['confirmation_message'] = wp_kses_post((string) ($input['confirmation_message'] ?? ''));
 
         foreach (['accent_color', 'background_color', 'text_color'] as $key) {
             $color = sanitize_hex_color((string) ($input[$key] ?? ''));
@@ -231,38 +212,51 @@ final class Settings
                 </tr>
             </table>
 
-            <h2><?php esc_html_e('Absender', 'widerrufsbutton-wc'); ?></h2>
+            <h2><?php esc_html_e('Widerruf-Seite', 'widerrufsbutton-wc'); ?></h2>
             <table class="form-table" role="presentation">
-                <?php
-                $this->text_row($s, 'sender_name', __('Absender-Name', 'widerrufsbutton-wc'));
-                $this->text_row($s, 'sender_email', __('Absender-E-Mail', 'widerrufsbutton-wc'), 'email');
-                $this->text_row($s, 'reply_to', __('Antwort-an (Reply-To)', 'widerrufsbutton-wc'), 'email');
-                ?>
+                <tr>
+                    <th scope="row"><label for="wrb-page-slug"><?php esc_html_e('Seiten-Slug', 'widerrufsbutton-wc'); ?></label></th>
+                    <td>
+                        <input type="text" id="wrb-page-slug" name="<?php echo esc_attr(self::OPTION); ?>[withdrawal_page_slug]" value="<?php echo esc_attr((string) $s['withdrawal_page_slug']); ?>" class="regular-text" />
+                        <p class="description"><?php esc_html_e('Slug der automatisch angelegten Widerruf-Seite (Standard: widerruf). Wird nur beim Anlegen genutzt, falls noch keine Seite mit dem Shortcode existiert.', 'widerrufsbutton-wc'); ?></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="wrb-page-id"><?php esc_html_e('Zugeordnete Seite', 'widerrufsbutton-wc'); ?></label></th>
+                    <td>
+                        <?php
+                        wp_dropdown_pages([
+                            'name'              => self::OPTION . '[withdrawal_page_id]',
+                            'id'                => 'wrb-page-id',
+                            'selected'          => (int) $s['withdrawal_page_id'],
+                            'show_option_none'  => __('- nicht zugeordnet -', 'widerrufsbutton-wc'),
+                            'option_none_value' => '0',
+                        ]);
+                        ?>
+                        <p class="description"><?php esc_html_e('Seite mit dem Shortcode [widerrufsbutton]. Wird beim Auto-Setup automatisch gesetzt.', 'widerrufsbutton-wc'); ?></p>
+                    </td>
+                </tr>
             </table>
 
-            <h2><?php esc_html_e('Mail-Texte', 'widerrufsbutton-wc'); ?></h2>
-            <p class="description"><?php esc_html_e('Platzhalter: {brand_name}, {datum}, {uhrzeit}, {reference}, {reason}. Leer = neutraler Standardtext.', 'widerrufsbutton-wc'); ?></p>
-            <table class="form-table" role="presentation">
+            <h2><?php esc_html_e('E-Mails', 'widerrufsbutton-wc'); ?></h2>
+            <p class="description">
                 <?php
-                $this->text_row($s, 'subject_acknowledgement', __('Betreff Eingangsbestaetigung', 'widerrufsbutton-wc'));
-                $this->textarea_row($s, 'body_acknowledgement', __('Text Eingangsbestaetigung', 'widerrufsbutton-wc'));
-                $this->text_row($s, 'subject_acceptance', __('Betreff Akzeptanz', 'widerrufsbutton-wc'));
-                $this->textarea_row($s, 'body_acceptance', __('Text Akzeptanz (Entwurf)', 'widerrufsbutton-wc'));
-                $this->text_row($s, 'subject_rejection', __('Betreff Ablehnung', 'widerrufsbutton-wc'));
-                $this->textarea_row($s, 'body_rejection', __('Text Ablehnung (Entwurf)', 'widerrufsbutton-wc'));
+                printf(
+                    /* translators: %s = Link zu den WooCommerce-E-Mail-Einstellungen. */
+                    esc_html__('Absender, Betreff, Texte und Layout der Widerruf-Mails werden zentral verwaltet unter %s.', 'widerrufsbutton-wc'),
+                    '<a href="' . esc_url(admin_url('admin.php?page=wc-settings&tab=email')) . '">' . esc_html__('WooCommerce -> Einstellungen -> E-Mails', 'widerrufsbutton-wc') . '</a>'
+                );
                 ?>
-            </table>
+            </p>
 
             <h2><?php esc_html_e('Oeffentliche Bestaetigung', 'widerrufsbutton-wc'); ?></h2>
             <table class="form-table" role="presentation">
                 <?php $this->textarea_row($s, 'confirmation_message', __('Bestaetigungstext nach Absenden', 'widerrufsbutton-wc')); ?>
             </table>
 
-            <h2><?php esc_html_e('White-Label / Design', 'widerrufsbutton-wc'); ?></h2>
+            <h2><?php esc_html_e('Design (Frontend-Widget)', 'widerrufsbutton-wc'); ?></h2>
             <table class="form-table" role="presentation">
                 <?php
-                $this->text_row($s, 'brand_name', __('Markenname', 'widerrufsbutton-wc'));
-                $this->text_row($s, 'brand_logo_url', __('Logo-URL', 'widerrufsbutton-wc'), 'url');
                 $this->text_row($s, 'accent_color', __('Akzentfarbe (Hex, z.B. #1DA3C9)', 'widerrufsbutton-wc'));
                 $this->text_row($s, 'background_color', __('Hintergrundfarbe (Hex)', 'widerrufsbutton-wc'));
                 $this->text_row($s, 'text_color', __('Textfarbe (Hex)', 'widerrufsbutton-wc'));

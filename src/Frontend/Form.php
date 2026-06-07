@@ -13,7 +13,7 @@ use Entruencer\Widerruf\Admin\Settings;
 use Entruencer\Widerruf\Domain\CaseResolver;
 use Entruencer\Widerruf\Domain\DeadlineCalculator;
 use Entruencer\Widerruf\Domain\OrderMatcher;
-use Entruencer\Widerruf\Mail\Mailer;
+use Entruencer\Widerruf\Mail\EmailManager;
 use Entruencer\Widerruf\Product\ExclusionField;
 use Entruencer\Widerruf\Repository\WithdrawalRepository;
 
@@ -208,16 +208,18 @@ final class Form
             'status'                 => 'eingegangen',
         ]);
 
-        // 8. Eingangsbestaetigung (immer, neutral).
+        // 8. Mails: Eingangsbestaetigung (Kunde, immer/neutral) + Benachrichtigung (Betreiber).
         if ($id !== null) {
-            $sent = (new Mailer())->send_acknowledgement($email, $now, [
-                'reference'    => 'WRB-' . $id,
-                'customer_name'=> $name,
-                'order_number' => $orderNumber,
-            ]);
+            $withdrawal = $repo->find($id) ?? [];
 
-            if ($sent) {
-                $repo->update($id, ['confirmation_mail_sent' => 1]);
+            if ($withdrawal !== []) {
+                // Neutrale Eingangsbestaetigung (gesetzliche Pflicht).
+                if (EmailManager::trigger('acknowledgement', $withdrawal)) {
+                    $repo->update($id, ['confirmation_mail_sent' => 1]);
+                }
+
+                // Betreiber benachrichtigen, damit kein Vorgang liegen bleibt.
+                EmailManager::trigger('new_admin', $withdrawal);
             }
         }
 

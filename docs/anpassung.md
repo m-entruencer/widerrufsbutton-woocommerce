@@ -10,8 +10,9 @@ eingebunden wird. Drei Ebenen: (1) Einstellungen im Backend, (2) Design via CSS,
    (legt die Custom Table an). Kein `composer install` noetig - das Plugin bringt
    einen eigenen Autoloader-Fallback mit.
 2. Seite anlegen (z.B. "Widerruf") und den Shortcode `[widerrufsbutton]` einfuegen.
-3. Unter **WooCommerce -> Widerrufe -> Einstellungen** Frist, Absender, Mail-Texte
-   und White-Label-Werte pflegen.
+3. Mails (Absender, Betreff, Texte, Layout) laufen ueber **WooCommerce -> Einstellungen
+   -> E-Mails** (vier Widerruf-Mails). Frist, Widerruf-Seite und Frontend-Design unter
+   **WooCommerce -> Widerrufe -> Einstellungen**.
 4. Bei ausgeschlossenen Produkten (z.B. digitaler Sofort-Download) im Produkt das
    Feld "Vom Widerruf ausgeschlossen" setzen.
 
@@ -24,29 +25,27 @@ Pfad: **WooCommerce -> Widerrufe -> Einstellungen**. Gespeichert in der Option
 |---|---|---|---|
 | Widerrufsfrist (Tage) | `deadline_days` | 14 | Laenge der Frist fuer die Fall-Einstufung. |
 | Fristbeginn | `deadline_start_basis` | `created` | `created` (Bestelldatum), `paid` (Zahlung), `completed` (Abschluss). |
-| Absender-Name | `sender_name` | leer | From-Name der Mails. Leer -> WordPress-Default. |
-| Absender-E-Mail | `sender_email` | leer | From-Adresse. Leer -> WordPress-Default. |
-| Antwort-an | `reply_to` | leer | Reply-To-Header. |
-| Betreff Eingangsbestaetigung | `subject_acknowledgement` | leer | Leer -> neutraler Standardbetreff. |
-| Betreff Akzeptanz | `subject_acceptance` | leer | Leer -> Standard. |
-| Betreff Ablehnung | `subject_rejection` | leer | Leer -> Standard. |
-| Text Eingangsbestaetigung | `body_acknowledgement` | leer | Leer -> Template `emails/acknowledgement.php`. |
-| Text Akzeptanz | `body_acceptance` | leer | Leer -> Template `emails/acceptance.php`. |
-| Text Ablehnung | `body_rejection` | leer | Leer -> Template `emails/rejection.php`. |
-| Oeffentliche Bestaetigung | `confirmation_message` | leer | Text nach dem Absenden. Leer -> Standardtext. |
-| Markenname | `brand_name` | leer | Platzhalter `{brand_name}` in Mails. Leer -> Shop-Name. |
-| Logo-URL | `brand_logo_url` | leer | Optional fuer eigene Templates. |
+| Seiten-Slug | `withdrawal_page_slug` | `widerruf` | Slug der automatisch angelegten Widerruf-Seite (nur beim Anlegen genutzt). |
+| Zugeordnete Seite | `withdrawal_page_id` | 0 | Seite mit dem Shortcode. Auto-Setup setzt das automatisch. |
+| Oeffentliche Bestaetigung | `confirmation_message` | leer | Text nach dem Absenden (Frontend). Leer -> Standardtext. |
 | Akzentfarbe | `accent_color` | leer | CSS `--wrb-accent`. Hex. |
 | Hintergrundfarbe | `background_color` | leer | CSS `--wrb-bg`. Hex. |
 | Textfarbe | `text_color` | leer | CSS `--wrb-text`. Hex. |
 | Eckenradius | `radius` | leer | CSS `--wrb-radius`, z.B. `12px`. |
 | Daten bei Deinstallation loeschen | `delete_data_on_uninstall` | aus | Nur bei aktiv werden Tabelle + Optionen bei Deinstallation entfernt. |
 
-### Mail-Platzhalter (in den Text-Feldern nutzbar)
+### Mails (WooCommerce)
 
-`{brand_name}`, `{datum}`, `{uhrzeit}`, `{reference}`, `{reason}`, `{customer_name}`,
-`{order_number}`. Wird ein Text-Feld leer gelassen, greift das jeweilige
-ueberschreibbare PHP-Template.
+Absender, Betreff, Ueberschrift, Texte und Layout der vier Widerruf-Mails
+(Eingangsbestaetigung, Akzeptanz, Ablehnung, Betreiber-Benachrichtigung) werden unter
+**WooCommerce -> Einstellungen -> E-Mails** verwaltet - dieselbe Stelle wie die
+Bestellmails. Bei der Betreiber-Benachrichtigung ist dort zusaetzlich der Empfaenger
+einstellbar (Default: Admin-E-Mail). Platzhalter in Betreff/Ueberschrift: `{site_title}`,
+`{reference}`, `{customer_name}`, `{order_number}`.
+
+Hinweis: Fuer zuverlaessige Zustellung (gesetzliche Eingangsbestaetigung) ein
+SMTP-/Mailversand-Plugin nutzen - WooCommerce/WordPress versendet sonst ueber die
+Server-Standardfunktion, was im Spam landen kann.
 
 ## 3. Design / White-Label (CSS)
 
@@ -70,19 +69,22 @@ die Plugin-CSS hat niedrige Spezifitaet.
 
 ## 4. Templates ueberschreiben (Theme-Override)
 
-Plugin-Templates liegen in `templates/`. Zum Ueberschreiben die Datei unter
-gleichem relativem Pfad im Theme ablegen:
+Das Frontend-Template liegt unter dem Plugin-Pfad, die Mail-Templates folgen der
+WooCommerce-Konvention (`<theme>/woocommerce/emails/...`):
 
 ```
 <theme>/widerrufsbutton-wc/frontend/form.php
-<theme>/widerrufsbutton-wc/emails/acknowledgement.php
-<theme>/widerrufsbutton-wc/emails/acceptance.php
-<theme>/widerrufsbutton-wc/emails/rejection.php
+<theme>/woocommerce/emails/customer-acknowledgement.php
+<theme>/woocommerce/emails/customer-acceptance.php
+<theme>/woocommerce/emails/customer-rejection.php
+<theme>/woocommerce/emails/admin-new-withdrawal.php
+(jeweils Plain-Text-Variante unter <theme>/woocommerce/emails/plain/...)
 ```
 
 Im Frontend-Template verfuegbar: `$redirect`. In den Mail-Templates verfuegbar:
-`$brand_name`, `$datum`, `$uhrzeit`, `$reference`, `$reason`, `$customer_name`,
-`$order_number` (je nach Mail-Typ gesetzt).
+`$datum`, `$uhrzeit`, `$reference`, `$customer_name`, `$order_number`, `$reason`,
+`$case_type`, `$detail_url` (je nach Mail-Typ) sowie `$email_heading` und `$email`
+(WC_Email-Instanz).
 
 ## 5. Filter-Hooks (Entwickler)
 

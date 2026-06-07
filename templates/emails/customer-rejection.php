@@ -1,15 +1,16 @@
 <?php
 /**
- * Mail-Template: Ablehnung des Widerrufs (Fall B/C, white-label).
+ * WC-Email-Template (HTML): Ablehnung des Widerrufs an den Kunden.
  *
  * ENTWURF. Versand erst nach manueller 1-Klick-Freigabe im Admin.
- * Keine automatische Ablehnung als Default (Rechtsklaerung offen).
  *
- * Ueberschreibbar via Theme: <theme>/widerrufsbutton-wc/emails/rejection.php
+ * Ueberschreibbar via Theme: <theme>/woocommerce/emails/customer-rejection.php
  *
- * Verfuegbare Variablen (vom Mailer gesetzt, TODO):
- *  - string $brand_name
- *  - string $reason  Ablehnungsgrund (z.B. ausgeschlossenes Produkt / ausserhalb Frist).
+ * Verfuegbare Variablen:
+ *  - string $reason         Ablehnungsgrund (optional).
+ *  - string $reference      Vorgangsreferenz.
+ *  - string $email_heading  Ueberschrift aus den WC-Mail-Einstellungen.
+ *  - WC_Email $email        Die Mail-Instanz.
  *
  * @package Entruencer\Widerruf
  */
@@ -17,8 +18,8 @@
 if (!defined('ABSPATH')) {
     exit;
 }
-$brand_name = $brand_name ?? '';
-$reason     = $reason ?? '';
+
+do_action('woocommerce_email_header', $email_heading, $email);
 ?>
 <p><?php esc_html_e('Guten Tag,', 'widerrufsbutton-wc'); ?></p>
 
@@ -32,5 +33,5 @@ printf(esc_html__('Grund: %s', 'widerrufsbutton-wc'), esc_html($reason));
 ?>
 </p>
 <?php endif; ?>
-
-<p><?php echo esc_html($brand_name); ?></p>
+<?php
+do_action('woocommerce_email_footer', $email);

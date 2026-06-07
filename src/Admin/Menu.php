@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Entruencer\Widerruf\Admin;
 
 use Entruencer\Widerruf\Domain\CaseResolver;
-use Entruencer\Widerruf\Mail\Mailer;
+use Entruencer\Widerruf\Mail\EmailManager;
 use Entruencer\Widerruf\Repository\WithdrawalRepository;
 
 if (!defined('ABSPATH')) {
@@ -228,16 +228,9 @@ final class Menu
             return;
         }
 
-        $context = [
-            'reference'    => 'WRB-' . (int) $row['id'],
-            'customer_name'=> (string) $row['customer_name'],
-            'order_number' => (string) $row['order_number'],
-            'reason'       => (string) $row['exclusion_reason'],
-        ];
-
-        $mailer    = new Mailer();
-        $acceptance = $mailer->build_acceptance($context);
-        $rejection  = $mailer->build_rejection_draft($context);
+        // Entwurfs-Vorschau im echten WC-Mail-Layout (kein Versand).
+        $acceptance = EmailManager::preview('acceptance', $row);
+        $rejection  = EmailManager::preview('rejection', $row);
 
         echo '<p><a href="' . esc_url($base) . '">&laquo; ' . esc_html__('Zurueck zur Liste', 'widerrufsbutton-wc') . '</a></p>';
 
@@ -290,7 +283,8 @@ final class Menu
     {
         echo '<div class="wrb-draft">';
         echo '<h2>' . esc_html($title) . '</h2>';
-        echo '<div class="wrb-draft__preview">' . wp_kses_post($body) . '</div>';
+        // Vollstaendiges WC-Mail-HTML isoliert im iframe (kein Backend-CSS-Konflikt, keine Skripte).
+        echo '<iframe class="wrb-draft__preview" sandbox style="width:100%;height:480px;border:1px solid #dcdcde;background:#fff;" srcdoc="' . esc_attr($body) . '"></iframe>';
         echo '<form method="post" action="' . esc_url(admin_url('admin-post.php')) . '">';
         echo '<input type="hidden" name="action" value="wrb_release_draft" />';
         echo '<input type="hidden" name="id" value="' . $id . '" />';
@@ -329,12 +323,7 @@ final class Menu
             exit;
         }
 
-        $sent = (new Mailer())->send_decision((string) $row['customer_email'], $decision, [
-            'reference'    => 'WRB-' . $id,
-            'customer_name'=> (string) $row['customer_name'],
-            'order_number' => (string) $row['order_number'],
-            'reason'       => (string) $row['exclusion_reason'],
-        ]);
+        $sent = EmailManager::trigger($decision === 'acceptance' ? 'acceptance' : 'rejection', $row);
 
         $detail = add_query_arg('view', $id, $base);
 

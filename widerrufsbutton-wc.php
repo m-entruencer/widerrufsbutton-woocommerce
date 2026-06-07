@@ -3,7 +3,7 @@
  * Plugin Name:       Widerrufsbutton für WooCommerce
  * Plugin URI:        https://entruencer.de/
  * Description:       White-Label-Plugin der Entruencer UG fuer den ab 19.06.2026 gesetzlich verpflichtenden elektronischen Widerrufsbutton (EU-RL 2023/2673, Paragraf 312k BGB) in WooCommerce. Zweistufiger Flow, automatische Eingangsbestaetigung, fallbasierte Bearbeitung (A/B/C).
- * Version:           0.1.0
+ * Version:           0.2.0
  * Author:            Entruencer UG (haftungsbeschraenkt)
  * Author URI:        https://entruencer.de/
  * License:           GPL-2.0-or-later
@@ -31,7 +31,7 @@ if (!defined('ABSPATH')) {
  *
  * WRB = WideRrufsButton.
  */
-define('WRB_VERSION', '0.1.0');
+define('WRB_VERSION', '0.2.0');
 define('WRB_PLUGIN_FILE', __FILE__);
 define('WRB_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('WRB_PLUGIN_URL', plugin_dir_url(__FILE__));

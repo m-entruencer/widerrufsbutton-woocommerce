@@ -37,3 +37,7 @@ $wpdb->query("DROP TABLE IF EXISTS {$table}"); // phpcs:ignore WordPress.DB -- T
 // Plugin-Options entfernen.
 delete_option('wrb_settings');
 delete_option('wrb_schema_version');
+delete_option('wrb_setup_version');
+
+// Die automatisch angelegte Widerruf-Seite wird bewusst NICHT geloescht
+// (Nutzerinhalt; kann manuell entfernt werden).
